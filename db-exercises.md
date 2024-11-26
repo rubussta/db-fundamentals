@@ -1,6 +1,6 @@
-# Решения задач на PostgreSQL из учебного пособия [Новиков Б. А. Основы технологий баз данных: учеб. пособие / Б. А. Новиков, Е. А. Горшкова, Н. Г. Графеева; под ред. Е. В. Рогова. — 2-е изд. — М.: ДМК Пресс, 2020. — 582 с.](https://postgrespro.ru/education/books/dbtech)  
+# Решения задач на PostgreSQL из учебного пособия [Новиков Б. А. "Основы технологий баз данных"](https://postgrespro.ru/education/books/dbtech)  
 
-Задания выполнены на основе [демонстрационной базы данных "Авиаперевозки".](https://postgrespro.ru/education/demodb)
+[<< К описанию репозитория](https://github.com/rubussta/db-fundamentals)
 
 ## Глава 4. Введение в SQL
 <details>
