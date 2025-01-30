@@ -886,3 +886,60 @@ json_agg                                                                        
 ```
 
 </details>
+
+## Глава 16. Функции и процедуры в базе данных
+<details>
+<summary>Упражнение 16.1. Напишите на языке PL/pgSQL функцию, возвращающую все данные, относящиеся к одному бронированию, номер которого задан параметром.  
+
+  **Решение 16.1:**
+По параметру номера бронирования функция возвращает этот номер, дату бронирования, сумму бронирования и из другой связангой таблицы номер билета(ов) в бронировании, id пассажира и его имя. Другая информация из связанной таблицы в виде jsonb имейла и номера телефона закомментарена. Также в функции реализована обработка исключений при запросе несуществующего номера бронирования.  
+
+```SQL
+CREATE OR REPLACE FUNCTION get_b_info_max(b_ref text) 
+RETURNS TABLE (
+book_ref CHARACTER(6), 
+book_date DATE, 
+total_amount NUMERIC(10,2), 
+ticket_no CHARACTER(13), 
+passenger_id CHARACTER VARYING(20), 
+passenger_name TEXT
+) AS 
+$$
+BEGIN
+    RETURN QUERY 
+			SELECT
+				b.book_ref, 
+				b.book_date::date, 
+				b.total_amount, 
+				t.ticket_no, 
+				t.passenger_id, 
+				t.passenger_name 
+				--t.contact_data::json ->> 'email' AS email,  
+				--t.contact_data::json ->> 'phone' AS phone
+				FROM bookings AS b
+				JOIN tickets AS t ON b.book_ref = t.book_ref
+				WHERE b.book_ref = $1;
+	IF NOT FOUND THEN
+        RAISE EXCEPTION 'Не найдено бронирование с номером: %', $1;
+    END IF;
+	RETURN;
+END;
+$$ LANGUAGE plpgsql;
+
+demo=# SELECT * FROM get_b_info_max('000010');
+
+ book_ref | book_date  | total_amount |   ticket_no   | passenger_id |   passenger_name   
+----------+------------+--------------+---------------+--------------+--------------------
+ 000010   | 2017-01-08 |     50900.00 | 0005432295359 | 5722 837257  | ALEKSANDR SOKOLOV
+ 000010   | 2017-01-08 |     50900.00 | 0005432295360 | 0564 044306  | LYUDMILA BOGDANOVA
+
+```
+
+Подаем на вход функции несуществующий номер бронировани
+```SQL
+demo=# SELECT * FROM get_b_info_max('000001');
+
+ОШИБКА:  Не найдено бронирование с номером: 000001
+КОНТЕКСТ:  функция PL/pgSQL get_b_info_max(text), строка 17, оператор RAIS
+```
+</details>
