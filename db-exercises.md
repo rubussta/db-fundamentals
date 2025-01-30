@@ -925,7 +925,10 @@ BEGIN
 	RETURN;
 END;
 $$ LANGUAGE plpgsql;
+```
 
+Подадим на вход функции номер бронирования 000010. В этом бронировании два билета.
+```SQL
 demo=# SELECT * FROM get_b_info_max('000010');
 
  book_ref | book_date  | total_amount |   ticket_no   | passenger_id |   passenger_name   
@@ -935,11 +938,12 @@ demo=# SELECT * FROM get_b_info_max('000010');
 
 ```
 
-Подаем на вход функции несуществующий номер бронировани
+Подадим на вход функции несуществующий номер бронирования:
 ```SQL
 demo=# SELECT * FROM get_b_info_max('000001');
 
 ОШИБКА:  Не найдено бронирование с номером: 000001
 КОНТЕКСТ:  функция PL/pgSQL get_b_info_max(text), строка 17, оператор RAIS
 ```
+
 </details>
